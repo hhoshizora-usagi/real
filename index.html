@@ -348,31 +348,33 @@ html[data-theme="light"] .fgrid a{color:var(--muted)}
   var root = document.documentElement;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* スプラッシュ（本家と同じ、1900msで5本バーが上へ抜ける演出） */
-  var splash = document.getElementById('splash');
-  function hideSplash(){ if(splash){ splash.classList.add('done'); } }
-  if (reduced) hideSplash();
-  else {
-    var introWait = 1900;
-    if (document.readyState === 'complete') setTimeout(hideSplash, introWait);
-    else window.addEventListener('load', function(){ setTimeout(hideSplash, introWait); });
-  }
-
   var text = 'エネルギーを、\n事業の力へ。';
   var target = document.getElementById('typing');
   var caret = document.getElementById('caret');
   var colored = 'エネルギーを、\n<strong>事業の力へ。</strong>';
-  if (reduced) { target.innerHTML = colored; caret.style.display='none'; }
-  else {
+
+  function startTyping(){
+    if (reduced) { target.innerHTML = colored; caret.style.display='none'; return; }
     var i = 0;
     (function tick(){
       i++;
       var plain = text.slice(0,i);
       var html = plain.replace('事業の力へ。','<strong>事業の力へ。</strong>');
       target.innerHTML = html;
-      if (i < text.length) setTimeout(tick, 95);
+      if (i < text.length) setTimeout(tick, 110);
     })();
   }
+
+  /* スプラッシュ（1900msで5本バーが上へ抜ける）→ そのあとタイピング開始 */
+  var splash = document.getElementById('splash');
+  function hideSplash(){ if(splash){ splash.classList.add('done'); } startTyping(); }
+  if (reduced) hideSplash();
+  else {
+    var introWait = 1500;
+    if (document.readyState === 'complete') setTimeout(hideSplash, introWait);
+    else window.addEventListener('load', function(){ setTimeout(hideSplash, introWait); });
+  }
+
   var slides = Array.prototype.slice.call(document.querySelectorAll('.hero__slide'));
   var dots = Array.prototype.slice.call(document.querySelectorAll('.hero__dots button'));
   var cur = 0, timer;
