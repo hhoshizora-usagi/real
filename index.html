@@ -365,9 +365,12 @@ html[data-theme="light"] .fgrid a{color:var(--muted)}
     })();
   }
 
-  /* スプラッシュ（1900msで5本バーが上へ抜ける）→ そのあとタイピング開始 */
+  /* スプラッシュを閉じたあと、少し間を置いてタイピング開始 */
   var splash = document.getElementById('splash');
-  function hideSplash(){ if(splash){ splash.classList.add('done'); } startTyping(); }
+  function hideSplash(){
+    if(splash) splash.classList.add('done');
+    setTimeout(startTyping, reduced ? 0 : 650);
+  }
   if (reduced) hideSplash();
   else {
     var introWait = 1500;
